@@ -12,7 +12,7 @@ param(
  
     #Issuer is the aad
     [Parameter(Mandatory=$false,Position=4)]
-    [string]$IssuerUrl = ""
+    [string]$tenantID = ""
  
 )
 
@@ -23,11 +23,11 @@ if([string]::IsNullOrEmpty($AppID)){
     $global:AppID = (Get-AzureRmADApplication -DisplayName $WebAppName).ApplicationId.Guid
 }
 
-if([string]::IsNullOrEmpty($IssuerUrl)){
-    $stsId=(Get-AzureRmTenant)[0].Id
-    $global:IssuerUrl = "https://sts.windows.net/$stsId/"
+if([string]::IsNullOrEmpty($tenantID)){
+    $global:tenantID=(Get-AzureRmTenant)[0].Id
 }
 
+$IssuerUrl = "https://sts.windows.net/$tenantID/"
 
 
 $authResourceName = $WebAppName + "/authsettings"
