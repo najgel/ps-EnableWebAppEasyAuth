@@ -11,8 +11,8 @@ param(
     [string]$WebAppName,
  
     #Issuer is the aad
-    [Parameter(Mandatory=$true,Position=4)]
-    [string]$IssuerUrl
+    [Parameter(Mandatory=$false,Position=4)]
+    [string]$IssuerUrl = ""
  
 )
 
@@ -22,6 +22,13 @@ if([string]::IsNullOrEmpty($AppID)){
     New-AzureRmADApplication -DisplayName $WebAppName -IdentifierUris "https://$WebAppName.azurewebsites.net"
     $global:AppID = (Get-AzureRmADApplication -DisplayName $WebAppName).ApplicationId.Guid
 }
+
+if([string]::IsNullOrEmpty($IssuerUrl)){
+    $stsId=(Get-AzureRmTenant)[0].Id
+    $global:IssuerUrl = "https://sts.windows.net/$stsId/"
+}
+
+
 
 $authResourceName = $WebAppName + "/authsettings"
 
