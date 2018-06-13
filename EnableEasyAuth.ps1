@@ -16,6 +16,8 @@ param(
  
 )
 
+$ErrorActionPreference = "Stop"
+
 $AppID = (Get-AzureRmADApplication -DisplayName $WebAppName).ApplicationId.Guid
 
 if([string]::IsNullOrEmpty($AppID)){
@@ -39,7 +41,7 @@ $auth.properties.unauthenticatedClientAction = "RedirectToLoginPage"
 $auth.properties.tokenStoreEnabled = "True"
 $auth.properties.defaultProvider = "AzureActiveDirectory"
 $auth.properties.isAadAutoProvisioned = "False"
-$auth.properties.clientId = $ClientId
+$auth.properties.clientId = $AppID
 $auth.properties.issuer = $IssuerUrl
 
-New-AzureRmResource -PropertyObject $auth.properties -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/sites/config -ResourceName $authResourceName -ApiVersion 2016-08-01 -Force
+new-AzureRmResource -PropertyObject $auth.properties -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/sites/config -ResourceName $authResourceName -ApiVersion 2016-08-01 -Force
